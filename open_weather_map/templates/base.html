@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+    <style>
+body {
+  font-family: Arial;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+form.example input[type=text] {
+  padding: 10px;
+  font-size: 17px;
+  border: 1px solid grey;
+  float: left;
+  width: 80%;
+  background: #f1f1f1;
+}
+
+form.example button {
+  float: left;
+  width: 20%;
+  padding: 10px;
+  background: #2196F3;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  border-left: none;
+  cursor: pointer;
+}
+
+
+
+form.example::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+    </style>
+    <meta charset="utf-8">
+    <title>Test</title>
+</head>
+
+<body>
+
+
+<div>
+    <h2>Search Cities</h2>
+    <input type="text" placeholder="Search.." name="search2" id="search_input">
+    <button onclick="myFunction()">Search</button>
+
+    <div class="list-group">
+    <ul id="myUL">
+        {% for city in city_objects %}
+        <li> <button type="button"  onclick="weatherDetail({{city.latitude}}, {{city.longitude}})" class="list-group-item list-group-item-action active">{{city.name}}</button> </li>
+        {% endfor %}
+    </ul>
+        </div>
+
+</div>
+
+{% if is_paginated %}
+<ul class="pagination">
+    {% if page_obj.has_previous %}
+    <li class="page-item">
+        <span><a href="?page={{ page_obj.previous_page_number }}">Previous</a></span>
+    </li>
+    {% endif %}
+    <li class="page-item">
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</span>
+    </li>
+    {% if page_obj.has_next %}
+    <li>
+        <span><a href="?page={{ page_obj.next_page_number }}">Next</a></span>
+    </li>
+    {% endif %}
+</ul>
+{% else %}
+div <h3>Your File Exam</h3>
+<p>File not yet available</p>
+{% endif %}
+
+<pre id="myText" ></pre>
+</body>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script >
+function myFunction() {
+  window.location.search="name=" + document.getElementById("search_input").value
+}
+
+function weatherDetail(lat, long) {
+    var args = {
+      url: `/open-weather-map/cityweather?lat=${lat}&lon=${long}`,
+      method: "GET",
+      timeout: 0,
+    };
+
+    $.ajax(args).done(function (response) {
+      document.getElementById("myText").innerHTML = JSON.stringify(response);
+    });
+};
+</script>
+</html>
